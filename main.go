@@ -22,6 +22,15 @@ var profilecpu = flag.String("profilecpu", "", "write cpu profile to file")
 var configfile = flag.String("configfile", "", "read image config from a json file")
 var saveNth = flag.Int("saveNth", 1, "save an image file for each nth iteration (default: save every iteration")
 
+// TODO add flag to set the initial random seed
+// TODO add Dockerfile
+// TODO extract golang interface for generic image generator
+// TODO check whether the output image has stabilized; i.e. shows no significant change from the previous iteration
+// TODO when iterating new variations, sample "wrap-around" values from the grid instead of ignoring x,y values outside the image bounds: does this produce a tiled image?
+// TODO flag to specify colour model (gray, rgb, hsl)
+// TODO flag to specify output directory for image files
+// TODO flag to specify dumping current state (and iteration number) of grid when exiting
+// TODO flag to specify initial state of grid
 
 func readFlags() {
 	flag.Parse()
