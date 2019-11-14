@@ -1,0 +1,41 @@
+{
+  "Width": 600,
+  "Height": 600,
+  "Scales": [
+    {
+      "ActivatorRadius": 50,
+      "InhibitorRadius": 100,
+      "SmallAmount": 0.05,
+      "Weight": 1,
+      "Symmetry": 3
+    },
+    {
+      "ActivatorRadius": 20,
+      "InhibitorRadius": 40,
+      "SmallAmount": 0.04,
+      "Weight": 1,
+      "Symmetry": 2
+    },
+    {
+      "ActivatorRadius": 10,
+      "InhibitorRadius": 20,
+      "SmallAmount": 0.03,
+      "Weight": 1,
+      "Symmetry": 2
+    },
+    {
+      "ActivatorRadius": 5,
+      "InhibitorRadius": 10,
+      "SmallAmount": 0.02,
+      "Weight": 1,
+      "Symmetry": 2
+    },
+    {
+      "ActivatorRadius": 1,
+      "InhibitorRadius": 2,
+      "SmallAmount": 0.01,
+      "Weight": 1,
+      "Symmetry": 2
+    }
+  ]
+}

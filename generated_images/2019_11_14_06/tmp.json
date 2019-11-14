@@ -1,0 +1,13 @@
+{
+  "Width": 600,
+  "Height": 600,
+  "Scales": [
+    {
+      "ActivatorRadius": 1,
+      "InhibitorRadius": 2,
+      "SmallAmount": 0.01,
+      "Weight": 1,
+      "Symmetry": 2
+    }
+  ]
+}
