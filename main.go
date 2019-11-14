@@ -16,13 +16,17 @@ import (
 
 // profiling: https://blog.golang.org/profiling-go-programs
 
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+var seed = time.Now().UnixNano()
+
+var profilecpu = flag.String("profilecpu", "", "write cpu profile to file")
 var configfile = flag.String("configfile", "", "read image config from a json file")
+var saveNth = flag.Int("saveNth", 1, "save an image file for each nth iteration (default: save every iteration")
+
 
 func readFlags() {
 	flag.Parse()
-	if *cpuprofile != "" {
-		f, err := os.Create(*cpuprofile)
+	if *profilecpu != "" {
+		f, err := os.Create(*profilecpu)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,7 +44,7 @@ func setupImageConfigured(configfile string) *images.MultiScaleImage {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("using config:\n", configJSON)
+		fmt.Println("using config:\n", string(configJSON))
 		fmt.Println()
 		img = images.MakeMultiScaleImageFromConfig(cfg)
 	}
@@ -71,27 +75,39 @@ func setupImage() *images.MultiScaleImage {
 	return img
 }
 
+func optionallySaveImage(img *images.MultiScaleImage, iteration int) {
+	filename := fmt.Sprintf("image_%03d.png", iteration)
+	if (*saveNth == 1) || (iteration%*saveNth == 0) {
+		util.OutputPNG(filename, img.GrayscalePixmap())
+	}
+}
+
 func generateImages() {
 	img := setupImage()
 
 	for i := 1; i > 0; i++ {
-		fmt.Printf("iteration %3d...\n", i)
-		filename := fmt.Sprintf("image_%03d.png", i)
+		fmt.Printf("iteration %3d...\r", i)
 
 		img.NextIteration()
-		util.OutputPNG(filename, img.GrayscalePixmap())
+		optionallySaveImage(img, i)
+	}
+}
+
+func printInfo() {
+	fmt.Println("using seed:  ", seed)
+	if *saveNth > 1 {
+		fmt.Printf("saving every: %d iterations\n", *saveNth)
 	}
 }
 
 func main() {
 	readFlags()
-	if *cpuprofile != "" {
+	if *profilecpu != "" {
 		defer pprof.StopCPUProfile()
 	}
 
-	var seed = time.Now().UnixNano()
-	fmt.Println("using seed: ", seed)
 	rand.Seed(seed)
 
+	printInfo()
 	generateImages()
 }
