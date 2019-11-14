@@ -109,11 +109,11 @@ func (img MultiScaleImage) calcNextVariations() {
 				img.variations[x][y][k] += math.Abs(img.activators[x][y][k] - img.inhibitors[x][y][k])
 			}
 
-			// which scale has the smallest i.e. the best variation
-			var (
+			// best variation will be the smallest
+			var ( // begin with values that are arbitrary yet valid
 				ndx               = 0
-				bestVariation     *turingScale
-				smallestVariation = 100.0 // begin with impossibly large number
+				bestVariation     = &img.scales[0]
+				smallestVariation = img.variations[x][y][0]
 			)
 			for k := 0; k < len(img.scales); k++ {
 				if img.variations[x][y][k] < smallestVariation {
@@ -134,9 +134,8 @@ func (img MultiScaleImage) normaliseGridValues() {
 	// normalise all grid values to scale them back between -1 and +1
 	// begin with the min and max values across the grid
 
-	var (
-		smallest = 100.0  // begin with impossibly large number
-		largest  = -100.0 // begin with impossibly small number
+	var ( // begin with values that are arbitrary yet valid
+		smallest, largest = img.grid[0][0], img.grid[0][0]
 	)
 	for x := 0; x < img.Width; x++ {
 		for y := 0; y < img.Height; y++ {
