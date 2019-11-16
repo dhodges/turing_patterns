@@ -4,21 +4,21 @@
   "Scales": [
     {
       "ActivatorRadius": 50,
-      "InhibitorRadius": 100,
+      "InhibitorRadius": 60,
       "SmallAmount": 0.05,
       "Weight": 1,
       "Symmetry": 3
     },
     {
       "ActivatorRadius": 20,
-      "InhibitorRadius": 40,
+      "InhibitorRadius": 30,
       "SmallAmount": 0.04,
       "Weight": 1,
       "Symmetry": 2
     },
     {
       "ActivatorRadius": 10,
-      "InhibitorRadius": 20,
+      "InhibitorRadius": 15,
       "SmallAmount": 0.03,
       "Weight": 1,
       "Symmetry": 2
