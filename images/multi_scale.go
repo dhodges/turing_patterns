@@ -106,7 +106,7 @@ func (img MultiScaleImage) calcNextVariations() {
 				// the variation can be calculated as an average of values within an arbitrary radius from x,y
 				// but instead we use a radius of one pixel, i.e. just the value at x,y
 				// apparently a radius of one pixel produces "the sharpest, most detailed images"
-				img.variations[x][y][k] += math.Abs(img.activators[x][y][k] - img.inhibitors[x][y][k])
+				img.variations[x][y][k] = math.Abs(img.activators[x][y][k] - img.inhibitors[x][y][k])
 			}
 
 			// best variation will be the smallest
