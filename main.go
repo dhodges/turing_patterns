@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/dhodges/turing_patterns/images"
-	"github.com/dhodges/turing_patterns/util"
 )
 
 // profiling: https://blog.golang.org/profiling-go-programs
@@ -44,8 +43,8 @@ func readFlags() {
 	}
 }
 
-func setupImageConfigured(configfile string) *images.MultiScaleImage {
-	var img *images.MultiScaleImage
+func setupImageConfigured(configfile string) *images.TuringScaleImageGray {
+	var img *images.TuringScaleImageGray
 
 	if cfg, err := images.ReadConfigFromJSONFile(configfile); err != nil {
 		log.Fatal(err)
@@ -56,14 +55,14 @@ func setupImageConfigured(configfile string) *images.MultiScaleImage {
 		}
 		fmt.Println("using config:\n", string(configJSON))
 		fmt.Println()
-		img = images.MakeMultiScaleImageFromConfig(cfg)
+		img = images.MakeTuringScaleImageGrayFromConfig(cfg)
 	}
 	return img
 }
 
-func setupImageDefault() *images.MultiScaleImage {
+func setupImageDefault() *images.TuringScaleImageGray {
 	width, height := 600, 600
-	img := images.MakeMultiScaleImage(width, height)
+	img := images.MakeTuringScaleImageGray(width, height)
 
 	fmt.Println("using config:")
 	fmt.Println("Width: ", width)
@@ -74,8 +73,8 @@ func setupImageDefault() *images.MultiScaleImage {
 	return img
 }
 
-func setupImage() *images.MultiScaleImage {
-	var img *images.MultiScaleImage
+func setupImage() *images.TuringScaleImageGray {
+	var img *images.TuringScaleImageGray
 
 	if *configfile != "" {
 		img = setupImageConfigured(*configfile)
@@ -85,10 +84,10 @@ func setupImage() *images.MultiScaleImage {
 	return img
 }
 
-func optionallySaveImage(img *images.MultiScaleImage, iteration int) {
+func optionallySaveImage(img *images.TuringScaleImageGray, iteration int) {
 	filename := fmt.Sprintf("image_%03d.png", iteration)
 	if (*saveNth == 1) || (iteration%*saveNth == 0) {
-		util.OutputPNG(filename, img.GrayscalePixmap())
+		img.OutputPNG(filename)
 	}
 }
 

@@ -1,6 +1,9 @@
 package util
 
-import "math/rand"
+import (
+	"image/color"
+	"math/rand"
+)
 
 // Make2DGridFloat64 make a 2D array of float64
 func Make2DGridFloat64(width, height int) [][]float64 {
@@ -20,6 +23,15 @@ func Make2DGridUInt8(width, height int) [][]uint8 {
 	return grid
 }
 
+// Make2DGridNRGBA make a 2D array of NRGBA colors
+func Make2DGridNRGBA(width, height int) [][]color.NRGBA {
+	grid := make([][]color.NRGBA, height)
+	for i := range grid {
+		grid[i] = make([]color.NRGBA, width)
+	}
+	return grid
+}
+
 // Make2DGridFloat64Randomised make a 2D array of random float64 values
 func Make2DGridFloat64Randomised(width, height int) [][]float64 {
 	grid := Make2DGridFloat64(width, height)
@@ -31,7 +43,19 @@ func Make2DGridFloat64Randomised(width, height int) [][]float64 {
 	return grid
 }
 
-// Make3DGridFloat64 make a 2D array of float64
+// Make3DGridUInt8 make a 3D array of UInt8
+func Make3DGridUInt8(width, height, depth int) [][][]uint8 {
+	grid := make([][][]uint8, height)
+	for i := range grid {
+		grid[i] = make([][]uint8, width)
+		for j := range grid[i] {
+			grid[i][j] = make([]uint8, depth)
+		}
+	}
+	return grid
+}
+
+// Make3DGridFloat64 make a 3D array of float64
 func Make3DGridFloat64(width, height, depth int) [][][]float64 {
 	grid := make([][][]float64, height)
 	for i := range grid {
