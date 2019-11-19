@@ -3,6 +3,8 @@ package util
 import (
 	"image/color"
 	"math/rand"
+
+	"github.com/dhodges/turing_patterns/hsb"
 )
 
 // Make2DGridFloat64 make a 2D array of float64
@@ -28,6 +30,15 @@ func Make2DGridNRGBA(width, height int) [][]color.NRGBA {
 	grid := make([][]color.NRGBA, height)
 	for i := range grid {
 		grid[i] = make([]color.NRGBA, width)
+	}
+	return grid
+}
+
+// Make2DGridNHSBA make a 2D array of NHSBA colors
+func Make2DGridNHSBA(width, height int) [][]hsb.NHSBA {
+	grid := make([][]hsb.NHSBA, height)
+	for i := range grid {
+		grid[i] = make([]hsb.NHSBA, width)
 	}
 	return grid
 }
