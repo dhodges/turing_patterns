@@ -16,20 +16,19 @@ import (
 
 var seed = time.Now().UnixNano()
 
-var profilecpu = flag.String("profilecpu", "", "write cpu profile to file")
-var configfile = flag.String("configfile", "", "read image config from a json file")
-var saveNth = flag.Int("saveNth", 1, "save an image file for each nth iteration (default: save every iteration")
-
 // TODO add flag to set the initial random seed
 // TODO add Dockerfile
-// TODO extract golang interface for generic image generator
 // TODO check whether the output image has stabilized; i.e. shows no significant change from the previous iteration
-// TODO flag to specify colour model (gray, rgb, hsl)
 // TODO flag to specify output directory for image files
 // TODO flag to specify dumping current state (and iteration number) of grid when exiting
 // TODO flag to specify initial state of grid
 // TODO flag to specify max n iterations
 // TODO generate animated PNGs
+
+var profilecpu = flag.String("profilecpu", "", "write cpu profile to file")
+var configfile = flag.String("configfile", "", "read image config from a json file")
+var saveNth = flag.Int("saveNth", 1, "save an image file for each nth iteration (default: save every iteration")
+var model = flag.String("model", "", "specify the generated color model ('gray' or 'rgb')")
 
 func readFlags() {
 	flag.Parse()
@@ -42,7 +41,14 @@ func readFlags() {
 	}
 }
 
-func setupImageDefault() *images.TSImageRGB {
+// IterativeImage generic interface
+type IterativeImage interface {
+	ConfigFromFile(string)
+	NextIteration()
+	OutputPNG(string)
+}
+
+func setupImageDefault() IterativeImage {
 	width, height := 600, 600
 
 	fmt.Println("using config:")
@@ -50,10 +56,17 @@ func setupImageDefault() *images.TSImageRGB {
 	fmt.Println("Height: ", height)
 	fmt.Println()
 
-	return images.MakeTSImageRGB(width, height)
+	switch *model {
+	case "rgb":
+		return images.MakeTSImageRGB(width, height)
+	case "gray":
+		return images.MakeTSImageGray(width, height)
+	default:
+		return images.MakeTSImageGray(width, height)
+	}
 }
 
-func setupImage() *images.TSImageRGB {
+func setupImage() IterativeImage {
 	img := setupImageDefault()
 
 	if *configfile != "" {
@@ -63,7 +76,7 @@ func setupImage() *images.TSImageRGB {
 	return img
 }
 
-func optionallySaveImage(img *images.TSImageRGB, iteration int) {
+func optionallySave(img IterativeImage, iteration int) {
 	filename := fmt.Sprintf("image_%03d.png", iteration)
 	if (*saveNth == 1) || (iteration%*saveNth == 0) {
 		img.OutputPNG(filename)
@@ -77,7 +90,7 @@ func generateImages() {
 		fmt.Printf("iteration %3d...\r", i)
 
 		img.NextIteration()
-		optionallySaveImage(img, i)
+		optionallySave(img, i)
 	}
 }
 
@@ -85,6 +98,12 @@ func printInfo() {
 	fmt.Println("using seed:  ", seed)
 	if *saveNth > 1 {
 		fmt.Printf("saving every: %d iterations\n", *saveNth)
+	}
+	switch *model {
+	case "rgb":
+		fmt.Println("generating color image")
+	default:
+		fmt.Println("generating grayscale image")
 	}
 }
 

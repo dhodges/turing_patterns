@@ -28,7 +28,7 @@ func MakeTSImageGray(width, height int) *TSImageGray {
 }
 
 // ConfigFromFile configures TSImageGray from the given file
-func (img TSImageGray) ConfigFromFile(configfile string) *TSImageGray {
+func (img TSImageGray) ConfigFromFile(configfile string) {
 	file, err := ioutil.ReadFile(configfile)
 	if err != nil {
 		log.Fatal(err)
@@ -40,8 +40,6 @@ func (img TSImageGray) ConfigFromFile(configfile string) *TSImageGray {
 	}
 
 	img.initFromConfig(config)
-
-	return &img
 }
 
 // initFromConfig configures TSImageGray from the given config

@@ -39,7 +39,7 @@ func MakeTSImageRGB(width, height int) *TSImageRGB {
 }
 
 // ConfigFromFile configures TSImageRGB from the given file
-func (img TSImageRGB) ConfigFromFile(configfile string) *TSImageRGB {
+func (img TSImageRGB) ConfigFromFile(configfile string) {
 
 	file, err := ioutil.ReadFile(configfile)
 	if err != nil {
@@ -52,8 +52,6 @@ func (img TSImageRGB) ConfigFromFile(configfile string) *TSImageRGB {
 	}
 
 	img.initFromConfig(config)
-
-	return &img
 }
 
 // initFromConfig configures TSImageRGB from the given config
