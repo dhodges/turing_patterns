@@ -28,29 +28,24 @@ type turingScale struct {
 	Symmetry        int
 }
 
-// makeTuringScaleGrid create a default multi-scale turing grid of given width and weight
-func makeTuringScaleGrid(width, height int) *tsGrid {
-	return &tsGrid{
-		Width:      width,
-		Height:     height,
-		scales:     DefaultConfig.Scales,
-		grid:       util.Make2DGridFloat64Randomised(width, height),
-		activators: util.Make3DGridFloat64(width, height, len(DefaultConfig.Scales)),
-		inhibitors: util.Make3DGridFloat64(width, height, len(DefaultConfig.Scales)),
-		variations: util.Make3DGridFloat64(width, height, len(DefaultConfig.Scales)),
-	}
+// DefaultTuringScales default values when we have no config
+var defaultTuringScales = []turingScale{
+	turingScale{20, 40, 0.04, 1, 2},
+	turingScale{10, 20, 0.03, 1, 2},
+	turingScale{5, 10, 0.02, 1, 2},
+	turingScale{1, 2, 0.01, 1, 2},
 }
 
 // makeTuringScaleGrid create a default multi-scale turing grid from the given params
-func makeTuringScaleGridFromConfig(cfg TuringScaleConfig) *tsGrid {
+func makeTuringScaleGrid(width, height int, scales []turingScale) *tsGrid {
 	return &tsGrid{
-		Width:      cfg.Width,
-		Height:     cfg.Height,
-		scales:     cfg.Scales,
-		grid:       util.Make2DGridFloat64Randomised(cfg.Width, cfg.Height),
-		activators: util.Make3DGridFloat64(cfg.Width, cfg.Height, len(cfg.Scales)),
-		inhibitors: util.Make3DGridFloat64(cfg.Width, cfg.Height, len(cfg.Scales)),
-		variations: util.Make3DGridFloat64(cfg.Width, cfg.Height, len(cfg.Scales)),
+		Width:      width,
+		Height:     height,
+		scales:     scales,
+		grid:       util.Make2DGridFloat64Randomised(width, height),
+		activators: util.Make3DGridFloat64(width, height, len(scales)),
+		inhibitors: util.Make3DGridFloat64(width, height, len(scales)),
+		variations: util.Make3DGridFloat64(width, height, len(scales)),
 	}
 }
 

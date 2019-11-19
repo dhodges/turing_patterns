@@ -1,7 +1,10 @@
 package images
 
 import (
+	"encoding/json"
 	"image/color"
+	"io/ioutil"
+	"log"
 	"math"
 
 	"github.com/dhodges/turing_patterns/util"
@@ -12,14 +15,38 @@ type TSImageGray struct {
 	grid *tsGrid
 }
 
-// MakeTSImageGray return a TSImageGray with default values
-func MakeTSImageGray(width, height int) *TSImageGray {
-	return &TSImageGray{grid: makeTuringScaleGrid(width, height)}
+// TSImageConfigGray parameters
+type TSImageConfigGray struct {
+	Width  int
+	Height int
+	Scales []turingScale
 }
 
-// MakeTSImageGrayFromConfig return a TSImageGray with the given config
-func MakeTSImageGrayFromConfig(cfg TuringScaleConfig) *TSImageGray {
-	return &TSImageGray{grid: makeTuringScaleGridFromConfig(cfg)}
+// MakeTSImageGray return a TSImageGray with default values
+func MakeTSImageGray(width, height int) *TSImageGray {
+	return &TSImageGray{grid: makeTuringScaleGrid(width, height, defaultTuringScales)}
+}
+
+// ConfigFromFile configures TSImageGray from the given file
+func (img TSImageGray) ConfigFromFile(configfile string) *TSImageGray {
+	file, err := ioutil.ReadFile(configfile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	config := TSImageConfigGray{}
+	if err = json.Unmarshal([]byte(file), &config); err != nil {
+		log.Fatal(err)
+	}
+
+	img.initFromConfig(config)
+
+	return &img
+}
+
+// initFromConfig configures TSImageGray from the given config
+func (img TSImageGray) initFromConfig(cfg TSImageConfigGray) {
+	img.grid = makeTuringScaleGrid(cfg.Width, cfg.Height, cfg.Scales)
 }
 
 // NextIteration generate the next variation of this image

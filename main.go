@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -43,48 +42,28 @@ func readFlags() {
 	}
 }
 
-func setupImageConfigured(configfile string) *images.TSImageGray {
-	var img *images.TSImageGray
-
-	if cfg, err := images.ReadConfigFromJSONFile(configfile); err != nil {
-		log.Fatal(err)
-	} else {
-		configJSON, err := json.MarshalIndent(cfg, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("using config:\n", string(configJSON))
-		fmt.Println()
-		img = images.MakeTSImageGrayFromConfig(cfg)
-	}
-	return img
-}
-
-func setupImageDefault() *images.TSImageGray {
+func setupImageDefault() *images.TSImageRGB {
 	width, height := 600, 600
-	img := images.MakeTSImageGray(width, height)
 
 	fmt.Println("using config:")
 	fmt.Println("Width: ", width)
 	fmt.Println("Height: ", height)
-	fmt.Println("Scales: ", images.DefaultConfig.Scales)
 	fmt.Println()
 
-	return img
+	return images.MakeTSImageRGB(width, height)
 }
 
-func setupImage() *images.TSImageGray {
-	var img *images.TSImageGray
+func setupImage() *images.TSImageRGB {
+	img := setupImageDefault()
 
 	if *configfile != "" {
-		img = setupImageConfigured(*configfile)
-	} else {
-		img = setupImageDefault()
+		img.ConfigFromFile(*configfile)
 	}
+
 	return img
 }
 
-func optionallySaveImage(img *images.TSImageGray, iteration int) {
+func optionallySaveImage(img *images.TSImageRGB, iteration int) {
 	filename := fmt.Sprintf("image_%03d.png", iteration)
 	if (*saveNth == 1) || (iteration%*saveNth == 0) {
 		img.OutputPNG(filename)
