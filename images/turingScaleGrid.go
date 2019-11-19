@@ -6,10 +6,10 @@ import (
 	"github.com/dhodges/turing_patterns/util"
 )
 
-// turingScaleGrid a grid of values which change with each iteration using turing scale variations
+// tsGrid a grid of values which change with each iteration using turing scale variations
 // see: https://softologyblog.wordpress.com/2011/07/05/multi-scale-turing-patterns/
 // and: http://www.jonathanmccabe.com/Cyclic_Symmetric_Multi-Scale_Turing_Patterns.pdf
-type turingScaleGrid struct {
+type tsGrid struct {
 	Width      int
 	Height     int
 	scales     []turingScale
@@ -29,8 +29,8 @@ type turingScale struct {
 }
 
 // makeTuringScaleGrid create a default multi-scale turing grid of given width and weight
-func makeTuringScaleGrid(width, height int) *turingScaleGrid {
-	return &turingScaleGrid{
+func makeTuringScaleGrid(width, height int) *tsGrid {
+	return &tsGrid{
 		Width:      width,
 		Height:     height,
 		scales:     DefaultConfig.Scales,
@@ -42,8 +42,8 @@ func makeTuringScaleGrid(width, height int) *turingScaleGrid {
 }
 
 // makeTuringScaleGrid create a default multi-scale turing grid from the given params
-func makeTuringScaleGridFromConfig(cfg TuringScaleConfig) *turingScaleGrid {
-	return &turingScaleGrid{
+func makeTuringScaleGridFromConfig(cfg TuringScaleConfig) *tsGrid {
+	return &tsGrid{
 		Width:      cfg.Width,
 		Height:     cfg.Height,
 		scales:     cfg.Scales,
@@ -55,12 +55,12 @@ func makeTuringScaleGridFromConfig(cfg TuringScaleConfig) *turingScaleGrid {
 }
 
 // NextIteration generate the next variation of this grid of values
-func (grid turingScaleGrid) NextIteration() {
+func (grid tsGrid) NextIteration() {
 	grid.calcNextVariations()
 	grid.normaliseGridValues()
 }
 
-func (grid turingScaleGrid) calcNextVariations() {
+func (grid tsGrid) calcNextVariations() {
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {
 			for k := 0; k < len(grid.scales); k++ {
@@ -97,7 +97,7 @@ func (grid turingScaleGrid) calcNextVariations() {
 	}
 }
 
-func (grid turingScaleGrid) normaliseGridValues() {
+func (grid tsGrid) normaliseGridValues() {
 	// normalise all grid values to scale them back between -1 and +1
 	// begin with the min and max values across the grid
 
@@ -119,7 +119,7 @@ func (grid turingScaleGrid) normaliseGridValues() {
 }
 
 // copyOfCurrentState return a copy of the current grid
-func (grid turingScaleGrid) copyOfCurrentState() [][]float64 {
+func (grid tsGrid) copyOfCurrentState() [][]float64 {
 	copy := util.Make2DGridFloat64(grid.Width, grid.Height)
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {

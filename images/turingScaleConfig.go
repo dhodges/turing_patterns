@@ -6,14 +6,14 @@ import (
 	"log"
 )
 
-// TuringScaleConfig parameters that define a turingScaleGrid
+// TuringScaleConfig parameters that define a tsGrid
 type TuringScaleConfig struct {
 	Width  int
 	Height int
 	Scales []turingScale
 }
 
-// DefaultConfig each turingScaleGrid will default to using these params
+// DefaultConfig each tsGrid will default to using these params
 var DefaultConfig TuringScaleConfig = TuringScaleConfig{
 	Scales: []turingScale{
 		turingScale{20, 40, 0.04, 1, 2},

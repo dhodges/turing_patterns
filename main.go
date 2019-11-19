@@ -43,8 +43,8 @@ func readFlags() {
 	}
 }
 
-func setupImageConfigured(configfile string) *images.TuringScaleImageGray {
-	var img *images.TuringScaleImageGray
+func setupImageConfigured(configfile string) *images.TSImageGray {
+	var img *images.TSImageGray
 
 	if cfg, err := images.ReadConfigFromJSONFile(configfile); err != nil {
 		log.Fatal(err)
@@ -55,14 +55,14 @@ func setupImageConfigured(configfile string) *images.TuringScaleImageGray {
 		}
 		fmt.Println("using config:\n", string(configJSON))
 		fmt.Println()
-		img = images.MakeTuringScaleImageGrayFromConfig(cfg)
+		img = images.MakeTSImageGrayFromConfig(cfg)
 	}
 	return img
 }
 
-func setupImageDefault() *images.TuringScaleImageGray {
+func setupImageDefault() *images.TSImageGray {
 	width, height := 600, 600
-	img := images.MakeTuringScaleImageGray(width, height)
+	img := images.MakeTSImageGray(width, height)
 
 	fmt.Println("using config:")
 	fmt.Println("Width: ", width)
@@ -73,8 +73,8 @@ func setupImageDefault() *images.TuringScaleImageGray {
 	return img
 }
 
-func setupImage() *images.TuringScaleImageGray {
-	var img *images.TuringScaleImageGray
+func setupImage() *images.TSImageGray {
+	var img *images.TSImageGray
 
 	if *configfile != "" {
 		img = setupImageConfigured(*configfile)
@@ -84,7 +84,7 @@ func setupImage() *images.TuringScaleImageGray {
 	return img
 }
 
-func optionallySaveImage(img *images.TuringScaleImageGray, iteration int) {
+func optionallySaveImage(img *images.TSImageGray, iteration int) {
 	filename := fmt.Sprintf("image_%03d.png", iteration)
 	if (*saveNth == 1) || (iteration%*saveNth == 0) {
 		img.OutputPNG(filename)

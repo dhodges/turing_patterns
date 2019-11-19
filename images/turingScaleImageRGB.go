@@ -8,15 +8,15 @@ import (
 	"github.com/dhodges/turing_patterns/util"
 )
 
-// TuringScaleImageRGB an RGB reaction/diffusion image (using turing scales)
-type TuringScaleImageRGB struct {
-	grid   *turingScaleGrid
+// TSImageRGB an RGB reaction/diffusion image (using turing scales)
+type TSImageRGB struct {
+	grid   *tsGrid
 	colors [][]hsb.NHSBA
 }
 
-// MakeTuringScaleImageRGB returns a TuringScaleImageRGB with default values
-func MakeTuringScaleImageRGB(width, height int) *TuringScaleImageRGB {
-	img := &TuringScaleImageRGB{
+// MakeTSImageRGB returns a TSImageRGB with default values
+func MakeTSImageRGB(width, height int) *TSImageRGB {
+	img := &TSImageRGB{
 		grid:   makeTuringScaleGrid(width, height),
 		colors: util.Make2DGridNHSBA(width, height),
 	}
@@ -29,9 +29,9 @@ func MakeTuringScaleImageRGB(width, height int) *TuringScaleImageRGB {
 	return img
 }
 
-// MakeTuringScaleImageRGBFromConfig return a TuringScaleImageRGB with the given config
-func MakeTuringScaleImageRGBFromConfig(cfg TuringScaleConfig) *TuringScaleImageRGB {
-	img := &TuringScaleImageRGB{
+// MakeTSImageRGBFromConfig return a TSImageRGB with the given config
+func MakeTSImageRGBFromConfig(cfg TuringScaleConfig) *TSImageRGB {
+	img := &TSImageRGB{
 		grid:   makeTuringScaleGridFromConfig(cfg),
 		colors: util.Make2DGridNHSBA(cfg.Width, cfg.Height),
 	}
@@ -45,7 +45,7 @@ func MakeTuringScaleImageRGBFromConfig(cfg TuringScaleConfig) *TuringScaleImageR
 }
 
 // NextIteration generates the next variation of this image
-func (img TuringScaleImageRGB) NextIteration() {
+func (img TSImageRGB) NextIteration() {
 
 	// we are interested in the change from the previous iteration to the next
 	previousGrid := img.copyOfCurrentState()
@@ -106,17 +106,17 @@ func toFixed(num float64, precision int) float64 {
 }
 
 // copyOfCurrentState return a copy of the current grid
-func (img TuringScaleImageRGB) copyOfCurrentState() [][]float64 {
+func (img TSImageRGB) copyOfCurrentState() [][]float64 {
 	return img.grid.copyOfCurrentState()
 }
 
 // OutputPNG generate a PNG file from the current iteration
-func (img TuringScaleImageRGB) OutputPNG(filename string) {
+func (img TSImageRGB) OutputPNG(filename string) {
 	util.OutputPNG(filename, img.pixmap())
 }
 
 // pixmap return a grayscale pixmap derived from the current state of grid values
-func (img TuringScaleImageRGB) pixmap() [][]color.NRGBA {
+func (img TSImageRGB) pixmap() [][]color.NRGBA {
 	pixels := util.Make2DGridNRGBA(img.grid.Width, img.grid.Height)
 
 	// map all grid values to a pixel grayscale value
