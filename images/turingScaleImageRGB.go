@@ -1,7 +1,10 @@
 package images
 
 import (
+	"encoding/json"
 	"image/color"
+	"io/ioutil"
+	"log"
 	"math"
 
 	"github.com/dhodges/turing_patterns/hsb"
@@ -14,10 +17,17 @@ type TSImageRGB struct {
 	colors [][]hsb.NHSBA
 }
 
+// TSImageConfigRGB parameters that define the image
+type TSImageConfigRGB struct {
+	Width  int
+	Height int
+	Scales []turingScale
+}
+
 // MakeTSImageRGB returns a TSImageRGB with default values
 func MakeTSImageRGB(width, height int) *TSImageRGB {
 	img := &TSImageRGB{
-		grid:   makeTuringScaleGrid(width, height),
+		grid:   makeTuringScaleGrid(width, height, defaultTuringScales),
 		colors: util.Make2DGridNHSBA(width, height),
 	}
 	// NB: store all colors as HSB, defaulting to a random hue
@@ -29,19 +39,27 @@ func MakeTSImageRGB(width, height int) *TSImageRGB {
 	return img
 }
 
-// MakeTSImageRGBFromConfig return a TSImageRGB with the given config
-func MakeTSImageRGBFromConfig(cfg TuringScaleConfig) *TSImageRGB {
-	img := &TSImageRGB{
-		grid:   makeTuringScaleGridFromConfig(cfg),
-		colors: util.Make2DGridNHSBA(cfg.Width, cfg.Height),
+// ConfigFromFile configures TSImageRGB from the given file
+func (img TSImageRGB) ConfigFromFile(configfile string) *TSImageRGB {
+
+	file, err := ioutil.ReadFile(configfile)
+	if err != nil {
+		log.Fatal(err)
 	}
-	// NB: store all colors as HSB values, defaulting to a muted teal
-	for x := 0; x < img.grid.Width; x++ {
-		for y := 0; y < img.grid.Height; y++ {
-			img.colors[x][y] = hsb.NHSBA{H: 180.0, S: 0.5, B: 0.5}
-		}
+
+	config := TSImageConfigRGB{}
+	if err = json.Unmarshal([]byte(file), &config); err != nil {
+		log.Fatal(err)
 	}
-	return img
+
+	img.initFromConfig(config)
+
+	return &img
+}
+
+// initFromConfig configures TSImageRGB from the given config
+func (img TSImageRGB) initFromConfig(cfg TSImageConfigRGB) {
+	img.grid = makeTuringScaleGrid(cfg.Width, cfg.Height, cfg.Scales)
 }
 
 // NextIteration generates the next variation of this image
