@@ -51,9 +51,8 @@ type IterativeImage interface {
 func setupImageDefault() IterativeImage {
 	width, height := 600, 600
 
-	fmt.Println("using config:")
-	fmt.Println("Width: ", width)
-	fmt.Println("Height: ", height)
+	fmt.Println("width: ", width)
+	fmt.Println("height: ", height)
 	fmt.Println()
 
 	switch *model {
@@ -77,8 +76,8 @@ func setupImage() IterativeImage {
 }
 
 func optionallySave(img IterativeImage, iteration int) {
-	filename := fmt.Sprintf("image_%03d.png", iteration)
 	if (*saveNth == 1) || (iteration%*saveNth == 0) {
+		filename := fmt.Sprintf("image_%03d.png", iteration)
 		img.OutputPNG(filename)
 	}
 }
@@ -95,15 +94,15 @@ func generateImages() {
 }
 
 func printInfo() {
-	fmt.Println("using seed:  ", seed)
+	fmt.Println("seed:  ", seed)
 	if *saveNth > 1 {
 		fmt.Printf("saving every: %d iterations\n", *saveNth)
 	}
 	switch *model {
 	case "rgb":
-		fmt.Println("generating color image")
+		fmt.Println("image: color")
 	default:
-		fmt.Println("generating grayscale image")
+		fmt.Println("image: grayscale")
 	}
 }
 
