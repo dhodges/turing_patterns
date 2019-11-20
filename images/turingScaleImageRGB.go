@@ -32,7 +32,7 @@ func MakeTSImageRGB(width, height int) *TSImageRGB {
 	// NB: store all colors as HSB, defaulting to a random hue
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			img.colors[x][y] = hsb.NHSBA{H: util.RandFloat64(0.0, 360.0), S: 1.0, B: 0.5}
+			img.colors[x][y] = hsb.NHSBA{H: util.RandFloat64(0.0, 360.0), S: 0.5, B: 1.0}
 		}
 	}
 	return img
@@ -79,12 +79,18 @@ func (img TSImageRGB) NextIteration() {
 // delta: [-1.0 <= delta <= 1.0], indicating the change in color
 func updateColor(c hsb.NHSBA, delta float64) hsb.NHSBA {
 	newColor := hsb.NHSBA{H: c.H, S: 1.0, B: 0.5, A: 1.0}
+	deltaHue := ((delta + 1) / 2) * 360.0
 
-	delta = util.ToFixed(delta*100, 2)
-
-	if delta != 0.0 {
-		newColor.H = ((delta + 1) / 2) * 360.0
+	if deltaHue > newColor.H {
+		newColor.H += delta * 10
+		newColor.S += delta * 10
+	} else {
+		newColor.H -= delta * 10
+		newColor.S -= delta * 10
 	}
+
+	newColor.H = util.Constrain(0.0, newColor.H, 360.0)
+	newColor.S = util.Constrain(0.0, newColor.S, 1.0)
 
 	return newColor
 }
