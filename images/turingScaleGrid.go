@@ -55,20 +55,36 @@ func (grid tsGrid) NextIteration() {
 	grid.normaliseGridValues()
 }
 
+func (grid tsGrid) sampleXY(x, y, scaleNdx int) float64 {
+	grid.activators[x][y][scaleNdx] = util.AverageOfPixelsWithinCircle(x, y, grid.scales[scaleNdx].ActivatorRadius, grid.grid)
+	grid.activators[x][y][scaleNdx] *= grid.scales[scaleNdx].Weight
+
+	grid.inhibitors[x][y][scaleNdx] = util.AverageOfPixelsWithinCircle(x, y, grid.scales[scaleNdx].InhibitorRadius, grid.grid)
+	grid.inhibitors[x][y][scaleNdx] *= grid.scales[scaleNdx].Weight
+
+	// the variation can be calculated as an average of values within an arbitrary radius from x,y
+	// but instead we use a radius of one pixel, i.e. just the value at x,y
+	// apparently a radius of one pixel produces "the sharpest, most detailed images"
+	return math.Abs(grid.activators[x][y][scaleNdx] - grid.inhibitors[x][y][scaleNdx])
+}
+
 func (grid tsGrid) calcNextVariations() {
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {
 			for k := 0; k < len(grid.scales); k++ {
-				grid.activators[x][y][k] = util.AverageOfPixelsWithinCircle(x, y, grid.scales[k].ActivatorRadius, grid.grid)
-				grid.activators[x][y][k] *= grid.scales[k].Weight
-
-				grid.inhibitors[x][y][k] = util.AverageOfPixelsWithinCircle(x, y, grid.scales[k].InhibitorRadius, grid.grid)
-				grid.inhibitors[x][y][k] *= grid.scales[k].Weight
-
-				// the variation can be calculated as an average of values within an arbitrary radius from x,y
-				// but instead we use a radius of one pixel, i.e. just the value at x,y
-				// apparently a radius of one pixel produces "the sharpest, most detailed images"
-				grid.variations[x][y][k] = math.Abs(grid.activators[x][y][k] - grid.inhibitors[x][y][k])
+				// if symmetry > 1 then we effectively average this variation
+				// with that many samples taken from the same point (x, y) rotated around
+				// the image centre - this should result in an image symmetric around
+				// its center point
+				symmetry := float64(grid.scales[k].Symmetry)
+				variation := 0.0
+				for n := symmetry; n > 0.0; n-- {
+					x1, y1 := util.RotateAboutCenter(x, y, 360.0/n)
+					x1 = util.ConstrainInt(0, x1, grid.Width)
+					y1 = util.ConstrainInt(0, y1, grid.Height)
+					variation += grid.sampleXY(x1, y1, k)
+				}
+				grid.variations[x][y][k] = variation / symmetry
 			}
 
 			// best variation will be the smallest
