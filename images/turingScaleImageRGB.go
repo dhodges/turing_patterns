@@ -78,21 +78,7 @@ func (img TSImageRGB) NextIteration() {
 // c: the previous version of this color
 // delta: [-1.0 <= delta <= 1.0], indicating the change in color
 func updateColor(c hsb.NHSBA, delta float64) hsb.NHSBA {
-	newColor := hsb.NHSBA{H: c.H, S: 1.0, B: 0.5, A: 1.0}
-	deltaHue := ((delta + 1) / 2) * 360.0
-
-	if deltaHue > newColor.H {
-		newColor.H += delta * 10
-		newColor.S += delta * 10
-	} else {
-		newColor.H -= delta * 10
-		newColor.S -= delta * 10
-	}
-
-	newColor.H = util.Constrain(0.0, newColor.H, 360.0)
-	newColor.S = util.Constrain(0.0, newColor.S, 1.0)
-
-	return newColor
+	return hsb.NHSBA{H: ((delta + 1) / 2) * 360.0, S: 1.0, B: 1.0, A: 1.0}
 }
 
 // c: the previous version of this color

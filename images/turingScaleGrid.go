@@ -69,6 +69,7 @@ func (grid tsGrid) sampleXY(x, y, scaleNdx int) float64 {
 }
 
 func (grid tsGrid) calcNextVariations() {
+	gridCenterX, gridCenterY := grid.Width/2, grid.Height/2
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {
 			for k := 0; k < len(grid.scales); k++ {
@@ -79,7 +80,7 @@ func (grid tsGrid) calcNextVariations() {
 				symmetry := float64(grid.scales[k].Symmetry)
 				variation := 0.0
 				for n := symmetry; n > 0.0; n-- {
-					x1, y1 := util.RotateAboutCenter(x, y, 360.0/n)
+					x1, y1 := util.RotateAboutAngle(x, y, 360.0/n, gridCenterX, gridCenterY)
 					x1 = util.ConstrainInt(0, x1, grid.Width)
 					y1 = util.ConstrainInt(0, y1, grid.Height)
 					variation += grid.sampleXY(x1, y1, k)
